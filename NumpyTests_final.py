@@ -355,7 +355,7 @@ def compute_cost(A2, Y, parameters):
 
     cost = np.squeeze(cost)     # makes sure cost is the dimension we expect. 
                                 # E.g., turns [[17]] into 17 
-    cost_encrypted=np.squeeze(cost_encrypted)
+    #cost_encrypted=np.squeeze(cost_encrypted)
     print("cost real", cost)
     print("cost after homomorphic", HE.decryptFrac(cost_encrypted))
     assert(isinstance(cost, float))
