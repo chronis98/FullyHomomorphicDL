@@ -269,27 +269,27 @@ def forward_propagation(X, parameters):
    
    
     Z1 = np.dot(W1, X) + b1
-    #Z1_encrypted=np.dot(W1_encrypted,X_encrypted)+b1_encrypted
+    Z1_encrypted=np.dot(W1_encrypted,X_encrypted)+b1_encrypted
     print("Z1 real",Z1)
-    #print("Z1 after homomorphic",decrypt_for_test(Z1_encrypted))
+    print("Z1 after homomorphic",decrypt_for_test(Z1_encrypted))
   
 
     A1 = np.tanh(Z1)
-    #A1_encrypted=tanh_test(encrypt2darray(Z1))
+    A1_encrypted=tanh_test(encrypt2darray(Z1))
     print("A1 real",A1)
-    #print("A1 after homomorphic encryption",decrypt_for_test(A1_encrypted))
+    print("A1 after homomorphic encryption",decrypt_for_test(A1_encrypted))
    
     
     Z2 = np.dot(W2, A1) + b2
-    #Z2_encrypted=np.dot(W2_encrypted, A1_encrypted) + b2_encrypted
+    Z2_encrypted=np.dot(W2_encrypted, A1_encrypted) + b2_encrypted
     print("Z2 real",Z2)
-    #print("Z2 after homomorphic encryption",decrypt_for_test(Z2_encrypted))
+    print("Z2 after homomorphic encryption",decrypt_for_test(Z2_encrypted))
    
     
     A2 = sigmoid(Z2)
-    #A2_encrypted = sigmoid_test(Z2_encrypted)
+    A2_encrypted = sigmoid_test(Z2_encrypted)
     print("sigmoid real",A2)
-    #print("sigmoid after homomorphic encryption",decrypt_for_test(A2_encrypted))
+    print("sigmoid after homomorphic encryption",decrypt_for_test(A2_encrypted))
     
 
     assert(A2.shape == (1, X.shape[1]))
