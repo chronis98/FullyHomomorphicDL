@@ -135,67 +135,30 @@ print("b2 = " + str(parameters["b2"]))
 
 #sigmoid function calculation for every encrypted item in the numpy array
 def sigmoid_test(array):
-    res=  np.empty(shape=(array.shape[0],array.shape[1]),dtype=PyCtxt)
-    res2= np.empty(shape=(array.shape[0],array.shape[1]),dtype=PyCtxt)
-    ena=0
     for item in array:
-        dio=0
+        temp2=0
         for item2 in item:
             
-            res[ena][dio]= HE.decryptFrac(item2)
-            dio=dio+1
-        ena=ena+1
+            array[temp][temp2]= sigmoid_homomorphic(item2)
+            temp2=temp2+1
+        temp=temp+1
 
-    ena=0
-    for item in array:
-        dio=0
-        for item2 in item:
-            
-            array[ena][dio]= sigmoid_homomorphic(item2)
-            dio=dio+1
-        ena=ena+1
-
-    ena=0
-    for item in array:
-        dio=0
-        for item2 in item:
-            
-            res2[ena][dio]= HE.decryptFrac(item2)
-            dio=dio+1
-        ena=ena+1
     return array
 
 
 #tanh function calculation for every encrypted item in the numpy array
 def tanh_test(arr):
-    res= np.empty(shape=(arr.shape[0],arr.shape[1]),dtype=PyCtxt)
-    res2= np.empty(shape=(arr.shape[0],arr.shape[1]),dtype=PyCtxt)
-    ena=0
+  
+    temp=0
     for item in arr:
-        dio=0
+        temp2=0
         for item2 in item:
             
-            res[ena][dio]= HE.decryptFrac(item2)
-            dio=dio+1
-        ena=ena+1
+            arr[temp][temp2]= tanh_homomorphic(item2)
+            temp2=temp2+1
+        temp=temp+1
 
-    ena=0
-    for item in arr:
-        dio=0
-        for item2 in item:
-            
-            arr[ena][dio]= tanh_homomorphic(item2)
-            dio=dio+1
-        ena=ena+1
-
-    ena=0
-    for item in arr:
-        dio=0
-        for item2 in item:
-            
-            res2[ena][dio]= HE.decryptFrac(item2)
-            dio=dio+1
-        ena=ena+1
+    
     return arr
 
 # function to encrypt all items from a numpy array 
@@ -203,28 +166,28 @@ def encrypt2darray(array1):
 
         arr_gen1 = np.empty(shape=(array1.shape[0],array1.shape[1]),dtype=PyCtxt)
         
-        ena=0
+        temp=0
         for item in array1:
-            dio=0
+            temp2=0
             for item2 in item:
                
-                arr_gen1[ena][dio] = HE.encryptFrac(item2)
-                dio=dio+1
-            ena=ena+1
+                arr_gen1[temp][temp2] = HE.encryptFrac(item2)
+                temp2=temp2+1
+            temp=temp+1
 
         return arr_gen1
 
 def decrypt_for_test(xtest):
-    arrr = np.empty(shape=(xtest.shape[0],xtest.shape[1]),dtype=PyCtxt)
-    ena=0
+    return_arr = np.empty(shape=(xtest.shape[0],xtest.shape[1]),dtype=PyCtxt)
+    temp=0
     for item in xtest:
-        dio=0
+        temp2=0
         for item2 in item:
             
-            arrr[ena][dio]= HE.decryptFrac(item2)
-            dio=dio+1
-        ena=ena+1
-    return arrr
+            return_arr[temp][temp2]= HE.decryptFrac(item2)
+            temp2=temp2+1
+        temp=temp+1
+    return return_arr
 
 # function to compute the approximation of the exponent of natural number e based on the MacLaurin series
 # iterations are limited to 8 in order for our results to be decrypted accurately
@@ -239,24 +202,24 @@ def exponentialchronfhe(x):
         if i ==0 :
             sum=HE.encryptFrac(1)
         else:
-            #deutero=HE.encryptFrac(1/math.factorial(i))
-            #deutero=~deutero
+            #const=HE.encryptFrac(1/math.factorial(i))
+            #const=~const
             x = ~ x
             sum=~sum
             
-            deutero=1/math.factorial(i)
+            const=1/math.factorial(i)
             
-            trito=(x**i)
-            trito=~trito
-            sum=sum+trito*deutero
-            #cp.cuda.Stream.null.synchronize()
-            print(sum,i,HE.decryptFrac(sum),deutero,HE.decryptFrac(x**i))
+            const_power=(x**i)
+            const_power=~const_power
+            sum=sum+const_power*const
+            print(sum,i,HE.decryptFrac(sum),const,HE.decryptFrac(x**i))
     return sum
 
 
 #sigmoid formula computation using the exponential approximation function
 	
 def sigmoid_homomorphic(X):
+    #we decrypt the divider and divisor in order to compute the result (we shall implement in a later version an approach to ciphertext w ciphertext division)
     return HE.encryptFrac((HE.decryptFrac(exponentialchronfhe(X))/(HE.decryptFrac(exponentialchronfhe(X)+HE.encryptFrac(1)))))
 
 #tanh formula computation using the exponential approximation function
@@ -271,6 +234,7 @@ def tanh_homomorphic(X):
     
     ar=exponentialchronfhe(item2)-HE.encryptFrac(1)
     par=exponentialchronfhe(item2)+HE.encryptFrac(1)
+    #we decrypt the divider and divisor in order to compute the result (we shall implement in a later version an approach to ciphertext w ciphertext division)
     return HE.encryptFrac(HE.decryptFrac(ar)/HE.decryptFrac(par))
 
 #forward propapagion function
@@ -374,11 +338,11 @@ def compute_cost(A2, Y, parameters):
     W2_encrypted=encrypt2darray(W2)
     A2_encrypted=encrypt2darray(A2)
   
-  
     logprobs = np.multiply(np.log(A2), Y) + np.multiply((1 - Y), np.log(1-A2))
     temp=Y_encrypted
     temp=temp*HE.encryptFrac(-1)
     temp=temp+HE.encryptFrac(1)
+    #np.multiply with ciphertext-object numpy array works similar to numpy.dot operation with ciphertexts
     logprobs_encrypted = np.multiply(encrypt2darray(np.log(A2)), Y_encrypted) + np.multiply(temp, encrypt2darray(np.log(1-A2)))
     print("logprobs real",logprobs)
     print("logprobs after homomorphic",decrypt_for_test(logprobs_encrypted),logprobs_encrypted)
