@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[61]:
 
 #added comment testingbranch
 # Package imports
@@ -23,27 +20,14 @@ start = time.time()
 print("hello")
 
 
-#get_ipython().run_line_magic('matplotlib', 'inline')
-HE = Pyfhel()           # Creating empty Pyfhel object
-#HE.contextGen(p=67108864,m=16384,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
-                            #  There are many configurable parameters on this step
-                            #  More info in Demo_ContextParameters.py, and
-                            #  in the docs of the function (link to docs in README)
-#HE.keyGen() 
+HE = Pyfhel()           
+
 np.random.seed(5) # set a seed so that the results are consistent
-
-
-# In[62]:
-
 
 X, Y = load_planar_dataset()
 
 
-# In[63]:
-
-
 plt.scatter(X[0, :], X[1, :], c=Y, s=40, cmap=plt.cm.Spectral);
-
 
 
 E=math.e
@@ -59,14 +43,8 @@ print ('The shape of Y is: ' + str(shape_Y))
 print ('I have m = %d training examples!' % (m))
 
 
-
-
-
 clf = sklearn.linear_model.LogisticRegressionCV();
 clf.fit(X.T, Y.T);
-
-
-
 
 
 # Plot the decision boundary for logistic regression
@@ -77,7 +55,6 @@ plt.title("Logistic Regression")
 LR_predictions = clf.predict(X.T)
 print ('Accuracy of logistic regression: %d ' % float((np.dot(Y, LR_predictions) + np.dot(1 - Y,1 - LR_predictions)) / float(Y.size) * 100) +
        '% ' + "(percentage of correctly labelled datapoints)")
-
 
 # In[67]:
 
@@ -93,15 +70,12 @@ def layer_sizes(X, Y):
     n_h -- the size of the hidden layer
     n_y -- the size of the output layer
     """
-    ### START CODE HERE ### (≈ 3 lines of code)
+    
     n_x = X.shape[0] # size of input layer
     n_h = 4
     n_y = Y.shape[0] # size of output layer
-    ### END CODE HERE ###
+   
     return (n_x, n_h, n_y)
-
-
-# In[68]:
 
 
 X_assess, Y_assess = layer_sizes_test_case()
@@ -110,10 +84,6 @@ print("The size of the input layer is: n_x = " + str(n_x))
 print("The size of the hidden layer is: n_h = " + str(n_h))
 print("The size of the output layer is: n_y = " + str(n_y))
 
-
-# In[69]:
-
- 
 
 def initialize_parameters(n_x, n_h, n_y):
     """
@@ -132,12 +102,12 @@ def initialize_parameters(n_x, n_h, n_y):
     
     np.random.seed(2) # we set up a seed so that your output matches ours although the initialization is random.
     
-    ### START CODE HERE ### (≈ 4 lines of code)
+    
     W1 = np.random.randn(n_h, n_x) * 0.01
     b1 = np.zeros(shape=(n_h, 1))
     W2 = np.random.randn(n_y, n_h) * 0.01
     b2 = np.zeros(shape=(n_y, 1))
-    ### END CODE HERE ###
+    
     
     assert (W1.shape == (n_h, n_x))
     assert (b1.shape == (n_h, 1))
@@ -153,7 +123,6 @@ def initialize_parameters(n_x, n_h, n_y):
 
 
 # In[70]:
-
 
 n_x, n_h, n_y = initialize_parameters_test_case()
 
@@ -228,25 +197,10 @@ def tanh_test(arr):
             dio=dio+1
         ena=ena+1
     return arr
+
 # function to encrypt all items from a numpy array 
 def encrypt2darray(array1):
-    #if(array1.shape[0]==1):
-    #    arr_gen1 = np.empty(shape=(array1.shape[1]),dtype=PyCtxt)
-    #    ena=0
-    #    for item in array1:
-    #        dio=0
-    #        for item2 in item:
-    #            print("Xronistest",item2)
-    #            arr_gen1[ena] = HE.encryptFrac(item2)
-    #            dio=dio+1
-    #        ena=ena+1
-    #elif (array1.shape[1]==1):
-    #    arr_gen1 = np.empty(shape=(array1.shape[0]),dtype=PyCtxt)
-    #    ena=0
-    #    for item in array1:
-    #            arr_gen1[ena] = HE.encryptFrac(item)
-    #            ena=ena+1
-    #else:
+
         arr_gen1 = np.empty(shape=(array1.shape[0],array1.shape[1]),dtype=PyCtxt)
         
         ena=0
@@ -259,6 +213,7 @@ def encrypt2darray(array1):
             ena=ena+1
 
         return arr_gen1
+
 def decrypt_for_test(xtest):
     arrr = np.empty(shape=(xtest.shape[0],xtest.shape[1]),dtype=PyCtxt)
     ena=0
@@ -348,7 +303,6 @@ def forward_propagation(X, parameters):
     b2_encrypted=encrypt2darray(b2)
     X_encrypted=encrypt2darray(X)
    
-    
    
     Z1 = np.dot(W1, X) + b1
     #Z1_encrypted=np.dot(W1_encrypted,X_encrypted)+b1_encrypted
@@ -362,14 +316,10 @@ def forward_propagation(X, parameters):
     #print("A1 after homomorphic encryption",decrypt_for_test(A1_encrypted))
    
     
-    
-    
     Z2 = np.dot(W2, A1) + b2
     #Z2_encrypted=np.dot(W2_encrypted, A1_encrypted) + b2_encrypted
     print("Z2 real",Z2)
     #print("Z2 after homomorphic encryption",decrypt_for_test(Z2_encrypted))
-   
-    
    
     
     A2 = sigmoid(Z2)
@@ -394,14 +344,6 @@ def forward_propagation(X, parameters):
 X_assess, parameters = forward_propagation_test_case()
 
 A2, cache = forward_propagation(X_assess, parameters)
-
-# Note: we use the mean here just to make sure that your output matches ours. 
-#print(np.mean(cache['Z1']), np.mean(cache['A1']), np.mean(cache['Z2']), np.mean(cache['A2']))
-
-
-
-
-
 
 
 
@@ -458,13 +400,9 @@ def compute_cost(A2, Y, parameters):
 
 
 
-
-
-
 A2, Y_assess, parameters = compute_cost_test_case()
 
 print("cost = " + str(compute_cost(A2, Y_assess, parameters)))
-
 
 
 #backward propagation function
@@ -567,8 +505,6 @@ def backward_propagation(parameters, cache, X, Y):
 
 
 
-
-
 parameters, cache, X_assess, Y_assess = backward_propagation_test_case()
 
 grads = backward_propagation(parameters, cache, X_assess, Y_assess)
@@ -576,7 +512,6 @@ print ("dW1 = "+ str(grads["dW1"]))
 print ("db1 = "+ str(grads["db1"]))
 print ("dW2 = "+ str(grads["dW2"]))
 print ("db2 = "+ str(grads["db2"]))
-
 
 
 end = time.time()
