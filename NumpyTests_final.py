@@ -135,6 +135,7 @@ print("b2 = " + str(parameters["b2"]))
 
 #sigmoid function calculation for every encrypted item in the numpy array
 def sigmoid_test(array):
+    temp=0
     for item in array:
         temp2=0
         for item2 in item:
