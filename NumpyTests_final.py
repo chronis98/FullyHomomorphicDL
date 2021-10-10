@@ -254,7 +254,7 @@ def forward_propagation(X, parameters):
     # p = plaintext modulus
     # m= coefficient modulus
     #flagbatching = option to use batching
-    HE.contextGen(p=8388608,m=8192,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
+    HE.contextGen(p=131072,m=8192,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
                             #  There are many configurable parameters on this step
                             #  More info in Demo_ContextParameters.py, and
                             #  in the docs of the function (link to docs in README)
@@ -391,7 +391,7 @@ def backward_propagation(parameters, cache, X, Y):
     """
 	#we set the context parameters for the encryption on the client side
     #we evaluate it here for testing purposes
-    HE.contextGen(p=8388608,m=16384,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
+    HE.contextGen(p=131072,m=16384,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
                             #  There are many configurable parameters on this step
                             #  More info in Demo_ContextParameters.py, and
                             #  in the docs of the function (link to docs in README)
