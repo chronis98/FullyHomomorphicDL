@@ -15,7 +15,7 @@ import math
 
 
 import time
-
+HE = Pyfhel() 
 
 # p = plaintext modulus
 # m= coefficient modulus
@@ -30,7 +30,7 @@ start = time.time()
 print("hello")
 
 
-HE = Pyfhel()           
+          
 
 np.random.seed(5) # set a seed so that the results are consistent
 
