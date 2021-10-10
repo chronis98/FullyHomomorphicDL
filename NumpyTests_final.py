@@ -254,7 +254,7 @@ def forward_propagation(X, parameters):
     # p = plaintext modulus
     # m= coefficient modulus
     #flagbatching = option to use batching
-    HE.contextGen(p=32768,m=8192,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
+    HE.contextGen(p=16384,m=8192,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
                             #  There are many configurable parameters on this step
                             #  More info in Demo_ContextParameters.py, and
                             #  in the docs of the function (link to docs in README)
@@ -276,7 +276,7 @@ def forward_propagation(X, parameters):
     Z1 = np.dot(W1, X) + b1
     Z1_encrypted=np.dot(W1_encrypted,X_encrypted)+b1_encrypted
     print("Z1 original",Z1)
-    print("Z1 after homomorphic",decrypt_for_test(Z1_encrypted))
+    print("Z1 after homomorphic encryption",decrypt_for_test(Z1_encrypted))
   
 
     A1 = np.tanh(Z1)
@@ -350,19 +350,19 @@ def compute_cost(A2, Y, parameters):
     #np.multiply with ciphertext-object numpy array works similar to numpy.dot operation with ciphertexts
     logprobs_encrypted = np.multiply(encrypt2darray(np.log(A2)), Y_encrypted) + np.multiply(temp, encrypt2darray(np.log(1-A2)))
     print("logprobs original",logprobs)
-    print("logprobs after homomorphic",decrypt_for_test(logprobs_encrypted),logprobs_encrypted)
+    print("logprobs after homomorphic encryption",decrypt_for_test(logprobs_encrypted),logprobs_encrypted)
    
     
     cost = - np.sum(logprobs) / m
     cost_encrypted = ( np.sum(logprobs_encrypted) *HE.encryptFrac(-1))*HE.encryptFrac(1/m)
     print("cost original", cost)
-    print("cost after homomorphic", HE.decryptFrac(cost_encrypted))
+    print("cost after homomorphic encryption", HE.decryptFrac(cost_encrypted))
 
     cost = np.squeeze(cost)     # makes sure cost is the dimension we expect. 
                                 # E.g., turns [[17]] into 17 
     #cost_encrypted=np.squeeze(cost_encrypted)
     print("cost original", cost)
-    print("cost after homomorphic", HE.decryptFrac(cost_encrypted))
+    print("cost after homomorphic encryption", HE.decryptFrac(cost_encrypted))
     assert(isinstance(cost, float))
     
     return cost
@@ -391,7 +391,7 @@ def backward_propagation(parameters, cache, X, Y):
     """
 	#we set the context parameters for the encryption on the client side
     #we evaluate it here for testing purposes
-    HE.contextGen(p=32768,m=16384,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
+    HE.contextGen(p=16384,m=16384,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
                             #  There are many configurable parameters on this step
                             #  More info in Demo_ContextParameters.py, and
                             #  in the docs of the function (link to docs in README)
@@ -425,14 +425,14 @@ def backward_propagation(parameters, cache, X, Y):
     dW2_encrypted= np.dot(dZ2_encrypted, A1_encrypted.T)
     dW2_encrypted=dW2_encrypted*HE.encryptFrac(1 / m)
     print("dw2 original",dW2)
-    print("dw2 after homomorphic",decrypt_for_test(dW2_encrypted),dW2_encrypted)
+    print("dw2 after homomorphic encryption",decrypt_for_test(dW2_encrypted),dW2_encrypted)
   
     
     db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
     db2_encrypted= np.sum(dZ2_encrypted, axis=1, keepdims=True)
     db2_encrypted=db2_encrypted*HE.encryptFrac(1 / m)
     print("db2 original",db2)
-    print("db2 after homomorphic",decrypt_for_test(db2_encrypted),db2_encrypted)
+    print("db2 after homomorphic encryption",decrypt_for_test(db2_encrypted),db2_encrypted)
     
   
    
@@ -445,7 +445,7 @@ def backward_propagation(parameters, cache, X, Y):
     dZ1_encrypted = np.multiply(np.dot(W2_encrypted.T, dZ2_encrypted),temp)
     
     print("dZ1 original",dZ1)
-    print("dZ1 after homomorphic",decrypt_for_test(dZ1_encrypted),dZ1_encrypted)
+    print("dZ1 after homomorphic encryption",decrypt_for_test(dZ1_encrypted),dZ1_encrypted)
    
     
 
@@ -454,15 +454,15 @@ def backward_propagation(parameters, cache, X, Y):
   
     dW1_encrypted=dW1_encrypted*HE.encryptFrac(1 / m)
     print("np.dot(dZ1, X.T) original",np.dot(dZ1, X.T))
-    print("np.dot(dZ1, X.T) after homomorphic",decrypt_for_test(np.dot(dZ1_encrypted, X_encrypted.T)))
+    print("np.dot(dZ1, X.T) after homomorphic encryption",decrypt_for_test(np.dot(dZ1_encrypted, X_encrypted.T)))
     print("dW1 original",dW1)
-    print("dW1 after homomorphic",decrypt_for_test(dW1_encrypted),dW1_encrypted)
+    print("dW1 after homomorphic encryption",decrypt_for_test(dW1_encrypted),dW1_encrypted)
 
     db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
     db1_encrypted =  np.sum(dZ1_encrypted, axis=1, keepdims=True)
     db1_encrypted=db1_encrypted*HE.encryptFrac(1 / m)
     print("db1 original",db1)
-    print("db1 after homomorphic",decrypt_for_test(db1_encrypted))
+    print("db1 after homomorphic encryption",decrypt_for_test(db1_encrypted))
     
     
     grads = {"dW1": dW1,
