@@ -1,0 +1,16 @@
+include Pyfhel/*.pxd
+include Pyfhel/*.pyx
+include Pyfhel/*.cpp
+include Pyfhel/Afhel/*.cpp
+include Pyfhel/Afhel/*.h
+include Pyfhel/SEAL/SEAL/seal/*.cpp
+include Pyfhel/SEAL/SEAL/seal/*.h
+
+include docs/_static/*
+
+include examples/*.py
+
+include README.md
+include LICENSE.txt
+include setup.py
+include requirements.txt
