@@ -16,6 +16,16 @@ import math
 
 import time
 
+
+# p = plaintext modulus
+# m= coefficient modulus
+#flagbatching = option to use batching
+HE.contextGen(p=16384,m=8192,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
+                            #  There are many configurable parameters on this step
+                            #  More info in Demo_ContextParameters.py, and
+                            #  in the docs of the function (link to docs in README)
+HE.keyGen() 
+
 start = time.time()
 print("hello")
 
@@ -251,14 +261,7 @@ def forward_propagation(X, parameters):
     cache -- a dictionary containing "Z1", "A1", "Z2" and "A2"
     """
     #set the parameters for the context generation
-    # p = plaintext modulus
-    # m= coefficient modulus
-    #flagbatching = option to use batching
-    HE.contextGen(p=16384,m=8192,flagBatching=False,fracDigits=75,intDigits=75)  # Generating context. The value of p is important.
-                            #  There are many configurable parameters on this step
-                            #  More info in Demo_ContextParameters.py, and
-                            #  in the docs of the function (link to docs in README)
-    HE.keyGen() 
+   
     
     # Retrieve each parameter from the dictionary "parameters"
     W1 = parameters['W1']
